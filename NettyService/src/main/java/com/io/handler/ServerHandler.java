@@ -35,7 +35,6 @@ public class ServerHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         Channel inComing = ctx.channel();
-        System.out.println("[Client] - " + msg);
         for (Channel channel : channels) {
             if (channel != inComing) {
                 channel.writeAndFlush("[" + inComing.remoteAddress() + "]" + msg + "\n");

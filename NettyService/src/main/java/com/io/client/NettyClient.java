@@ -32,7 +32,6 @@ public class NettyClient {
 
             while (true) {
                 channel.writeAndFlush(in.readLine() + "\r\n");
-                System.out.println("[Client] - "+channel.id());
             }
         } catch (IOException e) {
             e.printStackTrace();

@@ -33,12 +33,10 @@ public class TopNSink extends RichSinkFunction<String> {
                 .handler(new ClientInitializer());
 
         channel = bootstrap.connect(IP, PORT).channel();
-        System.out.println("open - "+channel.id());
     }
 
     @Override
     public void invoke(String value, Context context) {
-        System.out.println("invoke - "+channel.id());
         channel.writeAndFlush(value+"\n");
     }
 
