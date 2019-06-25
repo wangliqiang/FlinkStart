@@ -15,13 +15,12 @@ import io.netty.handler.codec.string.StringEncoder;
  */
 public class ServerInitializer extends ChannelInitializer<SocketChannel> {
     @Override
-    protected void initChannel(SocketChannel ch) throws Exception {
+    protected void initChannel(SocketChannel ch) {
         ChannelPipeline pipeline = ch.pipeline();
-        pipeline.addLast("framer",new DelimiterBasedFrameDecoder(8192, Delimiters.lineDelimiter()));
+        pipeline.addLast("framer",new DelimiterBasedFrameDecoder(8192, Delimiters.lineDelimiter())); // 粘包问题
         pipeline.addLast("decoder",new StringDecoder());
         pipeline.addLast("encoder",new StringEncoder());
         pipeline.addLast("handler",new ServerHandler());
 
-        System.out.println("[Server] - " + ch.remoteAddress() + " 加入 ！");
     }
 }

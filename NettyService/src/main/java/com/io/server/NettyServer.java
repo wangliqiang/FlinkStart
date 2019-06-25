@@ -23,6 +23,7 @@ public class NettyServer {
                 .childHandler(new ServerInitializer())
                 .option(ChannelOption.SO_BACKLOG,128)
                 .childOption(ChannelOption.SO_KEEPALIVE,true);
+
         System.out.println("[Server] - Started");
 
         ChannelFuture channelFuture = serverBootstrap.bind(8000);

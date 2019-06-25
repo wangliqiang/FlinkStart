@@ -1,6 +1,5 @@
-package com.io.client;
+package com.netty;
 
-import com.io.handler.ClientInitializer;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.EventLoopGroup;
@@ -32,7 +31,9 @@ public class NettyClient {
 
             while (true) {
                 channel.writeAndFlush(in.readLine() + "\r\n");
-                System.out.println("[Client] - "+channel.id());
+
+//            channel.writeAndFlush(new Date() + ": hello world!");
+//            Thread.sleep(2000);
             }
         } catch (IOException e) {
             e.printStackTrace();

@@ -1,46 +1,51 @@
 package com.topN;
 
-import org.apache.flink.api.java.tuple.Tuple2;
+import com.netty.ClientInitializer;
+import io.netty.bootstrap.Bootstrap;
+import io.netty.channel.Channel;
+import io.netty.channel.EventLoopGroup;
+import io.netty.channel.nio.NioEventLoopGroup;
+import io.netty.channel.socket.nio.NioSocketChannel;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.streaming.api.functions.sink.RichSinkFunction;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.Timestamp;
-
 /**
- * @Description TODO
+ * @Description Sink到netty服务端
  * @Author wangliqiang
  * @Date 2019/6/20 10:16
  */
 public class TopNSink extends RichSinkFunction<String> {
 
-    private Connection connection;
-    private PreparedStatement preparedStatement;
+    EventLoopGroup group;
+    Channel channel;
+
+    private static String IP = "172.17.20.88";
+    private static int PORT = 10101;
 
     @Override
     public void open(Configuration parameters) throws Exception {
         super.open(parameters);
-        Class.forName("com.mysql.jdbc.Driver");
-        connection = DriverManager.getConnection("jdbc:mysql://172.17.20.8:3306/topn", "root", "123456");
-        connection.setAutoCommit(false);
+        Bootstrap bootstrap = new Bootstrap();
+        group = new NioEventLoopGroup();
+
+        bootstrap.group(group)
+                .channel(NioSocketChannel.class)
+                .handler(new ClientInitializer());
+
+        channel = bootstrap.connect(IP, PORT).channel();
+        System.out.println("open - "+channel.id());
     }
 
     @Override
-    public void invoke(String value, Context context) throws Exception {
-        preparedStatement = connection.prepareStatement("insert into topn(info,date) values (?,?)");
-        preparedStatement.setString(1, value);
-        preparedStatement.setString(2, new Timestamp(System.currentTimeMillis()) + "");
-        preparedStatement.execute();
-        connection.commit();
+    public void invoke(String value, Context context) {
+        System.out.println("invoke - "+channel.id());
+        channel.writeAndFlush(value+"\n");
     }
 
     @Override
     public void close() throws Exception {
         super.close();
-        preparedStatement.close();
-        connection.close();
+        group.shutdownGracefully();
     }
 
 }

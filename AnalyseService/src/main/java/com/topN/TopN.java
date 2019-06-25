@@ -1,6 +1,5 @@
 package com.topN;
 
-import org.apache.flink.api.common.serialization.SerializationSchema;
 import org.apache.flink.api.common.serialization.SimpleStringSchema;
 import org.apache.flink.api.java.tuple.Tuple2;
 import org.apache.flink.streaming.api.TimeCharacteristic;
@@ -43,13 +42,7 @@ public class TopN {
 
         sum.windowAll(TumblingProcessingTimeWindows.of(Time.seconds(5)))//所有key元素进入一个5s长的窗口（选5秒是因为上游窗口每5s计算一轮数据，topN窗口一次计算只统计一个窗口时间内的变化）
                 .process(new TopNAllFunction(5))
-                .writeToSocket("127.0.0.1", 8000, new SerializationSchema<String>() {
-                    @Override
-                    public byte[] serialize(String element) {
-                        return element.getBytes();
-                    }
-                });
-//                .addSink(new TopNSink());
+                .addSink(new TopNSink());
 
         env.execute("TopN Task!");
     }
