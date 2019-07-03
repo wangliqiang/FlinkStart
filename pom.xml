@@ -11,6 +11,7 @@
     <modules>
         <module>AnalyseService</module>
         <module>NettyService</module>
+        <module>SocketService</module>
     </modules>
 
 </project>

@@ -19,8 +19,8 @@ public class TopNSink extends RichSinkFunction<String> {
     EventLoopGroup group;
     Channel channel;
 
-    private static String IP = "172.17.20.88";
-    private static int PORT = 10101;
+    private static String IP = "127.0.0.1";
+    private static int PORT = 8000;
 
     @Override
     public void open(Configuration parameters) throws Exception {
